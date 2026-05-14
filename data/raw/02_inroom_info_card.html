@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Countryside Resort – In-Room Info Card</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;600;700&family=Lato:wght@300;400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #e8e8e8;
+    font-family: 'Lato', sans-serif;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .print-note {
+    font-size: 13px;
+    color: #555;
+    background: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    max-width: 680px;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  /* A5 = 148mm x 210mm → at 96dpi ≈ 559px x 794px */
+  .card {
+    width: 559px;
+    background: #fff;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.18);
+    font-family: 'Lato', sans-serif;
+    page-break-after: always;
+  }
+
+  /* ─── FRONT SIDE ─── */
+  .card-header {
+    background: #1B4332;
+    padding: 18px 24px 14px;
+    color: #fff;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .resort-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .resort-tagline {
+    font-family: 'Lato', sans-serif;
+    font-size: 9px;
+    font-weight: 300;
+    color: #95D5B2;
+    margin-top: 3px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .header-welcome {
+    font-family: 'Lato', sans-serif;
+    font-size: 10.5px;
+    color: #D8F3DC;
+    font-weight: 300;
+    line-height: 1.5;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 10px;
+  }
+
+  .header-welcome strong {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .card-body {
+    padding: 0;
+  }
+
+  /* WiFi Banner */
+  .wifi-banner {
+    background: #2D6A4F;
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .wifi-qr-box {
+    width: 56px;
+    height: 56px;
+    background: #fff;
+    border-radius: 5px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6.5px;
+    color: #1B4332;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.3;
+    padding: 3px;
+  }
+
+  .wifi-info { flex: 1; }
+
+  .wifi-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    color: #95D5B2;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 2px;
+  }
+
+  .wifi-networks {
+    display: flex;
+    gap: 16px;
+  }
+
+  .wifi-net {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    color: #fff;
+  }
+
+  .wifi-net-name {
+    font-weight: 700;
+    font-size: 11px;
+  }
+
+  .wifi-net-pass {
+    font-size: 9px;
+    color: #D8F3DC;
+    font-weight: 400;
+  }
+
+  .wifi-scan-hint {
+    font-size: 8px;
+    color: #95D5B2;
+    font-family: 'Lato', sans-serif;
+    margin-top: 3px;
+  }
+
+  /* Two column grid */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid #E8F5E9;
+  }
+
+  .col-section {
+    padding: 14px 18px;
+    border-right: 1px solid #E8F5E9;
+  }
+
+  .col-section:last-child { border-right: none; }
+
+  .section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #1B4332;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #2D6A4F;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 5px;
+    gap: 6px;
+  }
+
+  .info-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 9px;
+    color: #555;
+    font-weight: 400;
+    flex-shrink: 0;
+  }
+
+  .info-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    color: #1B4332;
+    text-align: right;
+  }
+
+  .food-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    align-items: baseline;
+  }
+
+  .food-name {
+    font-size: 9px;
+    color: #333;
+    font-family: 'Lato', sans-serif;
+  }
+
+  .food-price {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    color: #1B4332;
+  }
+
+  .food-incl {
+    font-size: 8px;
+    color: #2D6A4F;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .order-banner {
+    background: #D8F3DC;
+    padding: 6px 18px;
+    font-size: 9px;
+    color: #1B4332;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    border-top: 1px solid #95D5B2;
+    border-bottom: 1px solid #95D5B2;
+    text-align: center;
+  }
+
+  /* Tours */
+  .tour-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    gap: 4px;
+  }
+
+  .tour-name {
+    font-size: 8.5px;
+    color: #333;
+    font-family: 'Lato', sans-serif;
+    flex: 1;
+  }
+
+  .tour-price {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #1B4332;
+    white-space: nowrap;
+  }
+
+  /* Footer */
+  .card-footer {
+    background: #1B4332;
+    padding: 8px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 8px;
+    color: #95D5B2;
+  }
+
+  .footer-wa {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* ─── BACK SIDE ─── */
+  .card-back-header {
+    background: #2D6A4F;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .back-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .back-subtitle {
+    font-size: 9px;
+    color: #D8F3DC;
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    margin-top: 2px;
+  }
+
+  .rules-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 16px 20px;
+    gap: 0;
+  }
+
+  .rule-block {
+    padding: 8px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
+  }
+
+  .rule-block:nth-child(even) { border-right: none; }
+  .rule-block:nth-last-child(-n+2) { border-bottom: none; }
+
+  .rule-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #1B4332;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .rule-icon { font-size: 11px; }
+
+  .rule-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 8.5px;
+    color: #444;
+    line-height: 1.5;
+  }
+
+  .rule-text strong {
+    color: #1B4332;
+    font-weight: 700;
+  }
+
+  .food-policy-banner {
+    background: #FFF8E7;
+    border-top: 2px solid #B8860B;
+    border-bottom: 2px solid #B8860B;
+    padding: 8px 20px;
+    margin: 0 0 0;
+  }
+
+  .food-policy-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5px;
+    font-weight: 700;
+    color: #B8860B;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 3px;
+  }
+
+  .food-policy-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 8.5px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .emergency-bar {
+    background: #1B4332;
+    padding: 10px 24px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .em-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    color: #95D5B2;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    white-space: nowrap;
+  }
+
+  .em-items {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .em-item {
+    font-family: 'Lato', sans-serif;
+    font-size: 8px;
+    color: #D8F3DC;
+  }
+
+  .em-item strong {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .back-footer {
+    padding: 8px 24px;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    font-size: 8px;
+    color: #888;
+    border-top: 1px solid #eee;
+  }
+
+  .review-request {
+    background: #D8F3DC;
+    padding: 8px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid #95D5B2;
+  }
+
+  .review-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 8.5px;
+    color: #1B4332;
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  .review-text strong {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+  }
+
+  .side-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1B4332;
+    margin-bottom: 8px;
+  }
+
+  @media print {
+    body { background: white; padding: 8px; gap: 0; }
+    .print-note { display: none; }
+    .side-label { display: none; }
+    .card { box-shadow: none; page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<div class="print-note">
+  📋 Print both sides on A5 paper (or A4 and trim) · Laminate · Place on room desk or dresser<br>
+  ✏️ Replace "countryside2026" with your actual WiFi password · Update tour prices if changed
+</div>
+
+<!-- ═══════ FRONT SIDE ═══════ -->
+<div>
+<div class="side-label">FRONT SIDE — Services & Information</div>
+<div class="card">
+
+  <!-- Header -->
+  <div class="card-header">
+    <div class="header-top">
+      <div>
+        <div class="resort-name">Countryside Resort Gilgit</div>
+        <div class="resort-tagline">Jageer Baseen · Gilgit-Baltistan · Pakistan</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Montserrat',sans-serif;font-size:8px;color:#95D5B2;">WhatsApp / Desk</div>
+        <div style="font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;color:#fff;">03109152096</div>
+        <div style="font-size:8px;color:#95D5B2;font-family:'Lato',sans-serif;">7:00 AM – 11:00 PM</div>
+      </div>
+    </div>
+    <div class="header-welcome">
+      Welcome to your home in the mountains. We are delighted to have you. <strong>Anything you need — WhatsApp us and we will take care of it.</strong>
+    </div>
+  </div>
+
+  <!-- WiFi -->
+  <div class="wifi-banner">
+    <div class="wifi-qr-box">SCAN<br>QR CODE<br>to connect</div>
+    <div class="wifi-info">
+      <div class="wifi-label">📶 Free WiFi — scan or enter manually</div>
+      <div class="wifi-networks">
+        <div class="wifi-net">
+          <div class="wifi-net-name">Countryside Resort</div>
+          <div class="wifi-net-pass">Password: <strong style="color:#fff;">countryside2026</strong></div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,0.2);"></div>
+        <div class="wifi-net">
+          <div class="wifi-net-name">Countryside Resort 2</div>
+          <div class="wifi-net-pass">Password: <strong style="color:#fff;">countryside2026</strong></div>
+        </div>
+      </div>
+      <div class="wifi-scan-hint">If one network is weak in your room, switch to the other.</div>
+    </div>
+  </div>
+
+  <!-- Two column info -->
+  <div class="two-col">
+    <!-- Left: Timings -->
+    <div class="col-section">
+      <div class="section-title">⏰ Daily Schedule</div>
+      <div class="info-row"><span class="info-label">Breakfast</span><span class="info-value">8:00 – 10:00 AM</span></div>
+      <div class="info-row"><span class="info-label">Lunch orders</span><span class="info-value">by 11:30 AM</span></div>
+      <div class="info-row"><span class="info-label">Dinner orders</span><span class="info-value">by 6:30 PM</span></div>
+      <div class="info-row"><span class="info-label">Swimming Pool</span><span class="info-value">8:00 AM – 8:00 PM</span></div>
+      <div class="info-row"><span class="info-label">Noise curfew</span><span class="info-value">11:00 PM</span></div>
+      <div class="info-row"><span class="info-label">Check-out</span><span class="info-value">11:00 AM</span></div>
+      <div class="info-row"><span class="info-label">Late check-out</span><span class="info-value">PKR 1,500/hr</span></div>
+
+      <div class="section-title" style="margin-top:10px;">🚗 Tours & Transfers</div>
+      <div class="tour-item"><span class="tour-name">Airport pickup / drop</span><span class="tour-price">PKR 1,000</span></div>
+      <div class="tour-item"><span class="tour-name">Gilgit city half-day</span><span class="tour-price">PKR 5,000</span></div>
+      <div class="tour-item"><span class="tour-name">Kargah Buddha & Yachani</span><span class="tour-price">PKR 4,000</span></div>
+      <div class="tour-item"><span class="tour-name">Dimbat Sarr Alpine Lake</span><span class="tour-price">PKR 10,000</span></div>
+      <div class="tour-item"><span class="tour-name">Naltar Valley (lakes)</span><span class="tour-price">PKR 20,000</span></div>
+      <div class="tour-item"><span class="tour-name">Hunza Valley day trip</span><span class="tour-price">PKR 25,000</span></div>
+      <div style="font-size:7.5px;color:#888;margin-top:4px;font-family:'Lato',sans-serif;">Private vehicle — your group only · Book via WhatsApp</div>
+    </div>
+
+    <!-- Right: Food menu -->
+    <div class="col-section">
+      <div class="section-title">🍳 Food Menu</div>
+      <div class="food-item"><span class="food-name">Complimentary Breakfast</span><span class="food-incl">INCL.</span></div>
+      <div style="font-size:7.5px;color:#888;margin-bottom:6px;font-family:'Lato',sans-serif;">Eggs · bread · chai · seasonal fruit</div>
+
+      <div class="food-item"><span class="food-name">Trout — grilled or fried (1 kg)</span><span class="food-price">3,400</span></div>
+      <div class="food-item"><span class="food-name">Trout with seasonal veg (2 kg)</span><span class="food-price">6,500</span></div>
+      <div class="food-item"><span class="food-name">Chicken Karahi (full)</span><span class="food-price">2,000</span></div>
+      <div class="food-item"><span class="food-name">Daal</span><span class="food-price">500</span></div>
+      <div class="food-item"><span class="food-name">Local Mamtoo / Laghmani / Chapshoro</span><span class="food-price">800+</span></div>
+      <div class="food-item"><span class="food-name">BBQ Platter (per person, min. 4)</span><span class="food-price">2,000</span></div>
+      <div class="food-item"><span class="food-name">Fresh Garden Salad</span><span class="food-price">300</span></div>
+      <div class="food-item"><span class="food-name">Seasonal Fruit Plate</span><span class="food-price">400</span></div>
+      <div class="food-item"><span class="food-name">Chai / Coffee / Fresh Juice</span><span class="food-price">100+</span></div>
+
+      <div style="font-size:7.5px;color:#888;margin-top:4px;margin-bottom:10px;font-family:'Lato',sans-serif;">
+        ✦ Today's fresh specials — ask via WhatsApp<br>
+        BBQ: arrange 5 hrs in advance · min 4 guests
+      </div>
+
+      <div class="section-title">📍 Nearby Attractions</div>
+      <div style="font-size:8.5px;color:#444;line-height:1.6;font-family:'Lato',sans-serif;">
+        Kargah Buddha (rock art) · <strong style="color:#1B4332;">10 min</strong><br>
+        Yachani Buddhist Monastery · <strong style="color:#1B4332;">15 min</strong><br>
+        Gilgit Polo Ground & Bazaar · <strong style="color:#1B4332;">12 min</strong><br>
+        Gilgit Airport · <strong style="color:#1B4332;">8 min</strong><br>
+        Dimbat Sarr Alpine Lake · <strong style="color:#1B4332;">45 min</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="order-banner">
+    📱 Order all meals via WhatsApp 03109152096 — minimum 30 minutes advance notice
+  </div>
+
+  <div class="card-footer">
+    <div class="footer-text">@countrysideresortgilgit · countrysideresortglt@gmail.com</div>
+    <div class="footer-wa">WhatsApp: 03109152096</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════ BACK SIDE ═══════ -->
+<div>
+<div class="side-label" style="margin-top:16px;">BACK SIDE — House Rules & Important Information</div>
+<div class="card">
+
+  <div class="card-back-header">
+    <div>
+      <div class="back-title">House Rules & Resort Guidelines</div>
+      <div class="back-subtitle">Please read — your comfort and that of other guests depends on it</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-family:'Montserrat',sans-serif;font-size:8px;color:#D8F3DC;">Season 2026</div>
+      <div style="font-family:'Lato',sans-serif;font-size:8px;color:#95D5B2;margin-top:2px;">Jageer Baseen, Gilgit-Baltistan</div>
+    </div>
+  </div>
+
+  <!-- Food Policy Banner -->
+  <div class="food-policy-banner">
+    <div class="food-policy-title">🍽️ Food & Dining Policy</div>
+    <div class="food-policy-text">
+      Room service is available — order via WhatsApp and we will bring food to your room with pleasure.
+      <strong style="color:#B8860B;">Self-cooking and use of personal cooking appliances in rooms is not permitted.</strong>
+      Outside food brought into the resort may not be heated or cooked on resort premises.
+      Our kitchen is open for all your meal needs — just ask us.
+    </div>
+  </div>
+
+  <!-- Rules Grid -->
+  <div class="rules-grid">
+
+    <div class="rule-block">
+      <div class="rule-title"><span class="rule-icon">🔕</span> Noise Curfew</div>
+      <div class="rule-text">All outdoor music, gatherings, and loud activity must end by <strong>11:00 PM</strong>. Please be considerate of other guests and our neighbours.</div>
+    </div>
+
+    <div class="rule-block">
+      <div class="rule-title"><span class="rule-icon">🏊</span> Swimming Pool</div>
+      <div class="rule-text">Open <strong>8:00 AM – 8:00 PM daily</strong>. Children under 12 must be accompanied by an adult at all times. No diving. Swim at own risk.</div>
+    </div>
+
+    <div class="rule-block">
+      <div class="rule-title"><span class="rule-icon">🚬</span> Smoking</div>
+      <div class="rule-text">Smoking is permitted in <strong>designated outdoor areas only</strong>. Smoking inside rooms results in a <strong>PKR 5,000 cleaning charge</strong>.</div>
+    </div>
+
+    <div class="rule-block">
+      <div class="rule-title"><span class="rule-icon">🚫</span> Alcohol</div>
+      <div class="rule-text">Strictly <strong>prohibited on all resort premises</strong> in accordance with Pakistani law. No exceptions.</div>
+    </div>
+
+    <div class="rule-block">
+      <div class="rule-title"><span class="rule-icon">👤</span> Visitors</div>
+      <div class="rule-text">Non-registered visitors must be approved at the front desk before entry. Day-use fee applies. Unregistered visitors are not permitted in rooms.</div>
+    </div>
+
+    <div class="rule-block">
+      <div class="rule-title"><span class="rule-icon">🔥</span> BBQ & Campfires</div>
+      <div class="rule-text">BBQ only in the <strong>designated BBQ area</strong>. Do not light fires independently in the orchard, garden, or near the stream.</div>
+    </div>
+
+    <div class="rule-block">
+      <div class="rule-title"><span class="rule-icon">🛏️</span> Room Service</div>
+      <div class="rule-text">Rooms are cleaned daily before noon. Please do not disturb sign will be respected. <strong>Check-out: 11:00 AM</strong>. Late check-out: PKR 1,500/hr.</div>
+    </div>
+
+    <div class="rule-block">
+      <div class="rule-title"><span class="rule-icon">💰</span> Damage Policy</div>
+      <div class="rule-text">Guests are responsible for any damage to resort property. Replacement or repair cost will be charged. Keys not returned: <strong>PKR 500 per key</strong>.</div>
+    </div>
+
+    <div class="rule-block">
+      <div class="rule-title"><span class="rule-icon">🐾</span> Pets</div>
+      <div class="rule-text">Pets are <strong>not permitted inside rooms</strong>. Prior arrangement required if bringing a pet on resort grounds.</div>
+    </div>
+
+    <div class="rule-block">
+      <div class="rule-title"><span class="rule-icon">🌿</span> Orchard & Garden</div>
+      <div class="rule-text">Walk freely and enjoy the orchard. In season, you are welcome to pick fruit. Please do not damage trees, plants, or the stream area.</div>
+    </div>
+
+  </div>
+
+  <!-- Emergency -->
+  <div class="emergency-bar">
+    <div class="em-title">🆘 Emergency</div>
+    <div class="em-items">
+      <div class="em-item">Resort (24hr): <strong>03109152096</strong></div>
+      <div class="em-item">District Hospital: <strong>05811-920006</strong></div>
+      <div class="em-item">Police: <strong>15</strong></div>
+      <div class="em-item">Rescue 1122: <strong>1122</strong></div>
+    </div>
+  </div>
+
+  <!-- Review Request -->
+  <div class="review-request">
+    <div style="font-size:18px;">⭐</div>
+    <div class="review-text">
+      If anything is not right — tell us <strong>now</strong>, not in the review. We will fix it immediately.<br>
+      Enjoyed your stay? A 2-minute review on <strong>Google · TripAdvisor · Agoda</strong> means the world to our family.
+    </div>
+  </div>
+
+  <div class="back-footer">
+    Countryside Resort Gilgit · Jageer Baseen, Gilgit-Baltistan, Pakistan · @countrysideresortgilgit · 03109152096
+  </div>
+
+</div>
+</div>
+
+</body>
+</html>
