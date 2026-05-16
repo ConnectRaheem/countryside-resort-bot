@@ -2,696 +2,585 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Countryside Resort - Chat Widget Demo</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countryside Resort - Chat</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        :root {
-            --forest: #1a2e1a;
-            --moss: #2d4a2d;
-            --sage: #7a9e6e;
-            --cream: #f5f0e8;
-            --sand: #e8dcc8;
-            --gold: #c9a84c;
-            --text: #1a1a1a;
-            --muted: #6b6b6b;
-            --white: #ffffff;
-            --shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
-            --radius: 18px;
-        }
+    :root {
+      --forest: #1a2e1a;
+      --moss: #2d4a2d;
+      --sage: #7a9e6e;
+      --cream: #f5f0e8;
+      --sand: #e8dcc8;
+      --gold: #c9a84c;
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+      --white: #ffffff;
+    }
 
-        /* Demo page background */
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: linear-gradient(135deg, #1a2e1a 0%, #2d4a2d 50%, #1a2e1a 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #1a2e1a 0%, #2d4a2d 100%);
+      min-height: 100vh;
+    }
 
-        .demo-text {
-            text-align: center;
-            color: rgba(245, 240, 232, 0.3);
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
-            font-weight: 300;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            white-space: nowrap;
-        }
+    .demo-text {
+      color: rgba(245, 240, 232, 0.25);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      pointer-events: none;
+    }
 
-        /* ── Chat Bubble Button ── */
-        #chat-bubble {
-            position: fixed;
-            bottom: 32px;
-            right: 32px;
-            width: 62px;
-            height: 62px;
-            background: linear-gradient(135deg, var(--moss), var(--forest));
-            border-radius: 50%;
-            border: 2px solid var(--gold);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(201, 168, 76, 0.4);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-            z-index: 1000;
-            animation: pulse 3s infinite;
-        }
+    /* ── Bubble ── */
+    #chat-bubble {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #2d4a2d, #1a2e1a);
+      border-radius: 50%;
+      border: 2px solid #c9a84c;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      z-index: 9999;
+      transition: transform 0.2s ease;
+    }
 
-        #chat-bubble:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 8px rgba(201, 168, 76, 0.15);
-            animation: none;
-        }
+    #chat-bubble:hover {
+      transform: scale(1.08);
+    }
 
-        @keyframes pulse {
+    .icon-chat {
+      display: block;
+    }
 
-            0%,
-            100% {
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(201, 168, 76, 0.4);
-            }
+    .icon-close {
+      display: none;
+    }
 
-            50% {
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), 0 0 0 10px rgba(201, 168, 76, 0);
-            }
-        }
+    #chat-bubble.open .icon-chat {
+      display: none;
+    }
 
-        #chat-bubble svg {
-            transition: transform 0.3s ease;
-        }
+    #chat-bubble.open .icon-close {
+      display: block;
+    }
 
-        #chat-bubble.open svg.icon-chat {
-            display: none;
-        }
+    .notif {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      width: 16px;
+      height: 16px;
+      background: #e74c3c;
+      border-radius: 50%;
+      border: 2px solid #1a2e1a;
+      font-size: 0.6rem;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
 
-        #chat-bubble.open svg.icon-close {
-            display: block !important;
-        }
+    /* ── Window ── */
+    #chat-window {
+      position: fixed;
+      bottom: 100px;
+      right: 28px;
+      width: 370px;
+      height: 540px;
+      background: #f5f0e8;
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 9998;
+    }
 
-        /* ── Chat Window ── */
-        #chat-window {
-            position: fixed;
-            bottom: 110px;
-            right: 32px;
-            width: 380px;
-            height: 560px;
-            background: var(--cream);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 999;
-            transform: scale(0.85) translateY(20px);
-            opacity: 0;
-            pointer-events: none;
-            transform-origin: bottom right;
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
-            border: 1px solid rgba(201, 168, 76, 0.2);
-        }
+    #chat-window.open {
+      display: flex;
+    }
 
-        #chat-window.open {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-            pointer-events: all;
-        }
+    /* ── Header ── */
+    .chat-header {
+      background: linear-gradient(135deg, #1a2e1a, #2d4a2d);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
 
-        /* ── Header ── */
-        .chat-header {
-            background: linear-gradient(135deg, var(--forest) 0%, var(--moss) 100%);
-            padding: 18px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            position: relative;
-            overflow: hidden;
-        }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c9a84c, #e8c05a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1a2e1a;
+      flex-shrink: 0;
+    }
 
-        .chat-header::before {
-            content: '';
-            position: absolute;
-            top: -30px;
-            right: -30px;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: rgba(201, 168, 76, 0.08);
-        }
+    .header-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #f5f0e8;
+    }
 
-        .avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), #e8c05a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--forest);
-            flex-shrink: 0;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
+    .header-sub {
+      font-size: 0.7rem;
+      color: #7a9e6e;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
 
-        .header-info {
-            flex: 1;
-        }
+    .status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #5cb85c;
+      margin-left: auto;
+      flex-shrink: 0;
+      box-shadow: 0 0 6px rgba(92, 184, 92, 0.7);
+    }
 
-        .header-name {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: var(--cream);
-            letter-spacing: 0.02em;
-            line-height: 1.2;
-        }
+    /* ── Messages ── */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-        .header-sub {
-            font-size: 0.72rem;
-            color: var(--sage);
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
+    .chat-messages::-webkit-scrollbar {
+      width: 3px;
+    }
 
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #5cb85c;
-            box-shadow: 0 0 6px rgba(92, 184, 92, 0.6);
-            animation: blink 2s infinite;
-        }
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #e8dcc8;
+      border-radius: 3px;
+    }
 
-        @keyframes blink {
+    .welcome-card {
+      background: linear-gradient(135deg, #1a2e1a, #2d4a2d);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid rgba(201, 168, 76, 0.2);
+    }
 
-            0%,
-            100% {
-                opacity: 1;
-            }
+    .welcome-card .resort-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #c9a84c;
+      margin-bottom: 5px;
+    }
 
-            50% {
-                opacity: 0.4;
-            }
-        }
+    .welcome-card p {
+      font-size: 0.8rem;
+      color: rgba(245, 240, 232, 0.8);
+      line-height: 1.5;
+    }
 
-        /* ── Messages ── */
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            scroll-behavior: smooth;
-        }
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
 
-        .chat-messages::-webkit-scrollbar {
-            width: 4px;
-        }
+    .chip {
+      background: white;
+      border: 1px solid rgba(122, 158, 110, 0.4);
+      border-radius: 20px;
+      padding: 5px 10px;
+      font-size: 0.7rem;
+      color: #2d4a2d;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
 
-        .chat-messages::-webkit-scrollbar-track {
-            background: transparent;
-        }
+    .chip:hover {
+      background: #2d4a2d;
+      color: #f5f0e8;
+    }
 
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: var(--sand);
-            border-radius: 4px;
-        }
+    .message {
+      display: flex;
+      gap: 8px;
+      animation: fadeUp 0.25s ease;
+    }
 
-        /* Welcome message */
-        .welcome-card {
-            background: linear-gradient(135deg, var(--forest), var(--moss));
-            border-radius: 14px;
-            padding: 16px;
-            color: var(--cream);
-            text-align: center;
-            border: 1px solid rgba(201, 168, 76, 0.25);
-        }
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
 
-        .welcome-card .resort-name {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 0.85rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--gold);
-            margin-bottom: 6px;
-        }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-        .welcome-card p {
-            font-size: 0.82rem;
-            color: rgba(245, 240, 232, 0.8);
-            line-height: 1.5;
-        }
+    .message.user {
+      flex-direction: row-reverse;
+    }
 
-        /* Quick suggestions */
-        .suggestions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 4px;
-        }
+    .msg-av {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-top: 2px;
+    }
 
-        .suggestion-chip {
-            background: var(--white);
-            border: 1px solid rgba(122, 158, 110, 0.35);
-            border-radius: 20px;
-            padding: 5px 11px;
-            font-size: 0.72rem;
-            color: var(--moss);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: 'DM Sans', sans-serif;
-            white-space: nowrap;
-        }
+    .message.bot .msg-av {
+      background: linear-gradient(135deg, #c9a84c, #e8c05a);
+      color: #1a2e1a;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+    }
 
-        .suggestion-chip:hover {
-            background: var(--moss);
-            color: var(--cream);
-            border-color: var(--moss);
-            transform: translateY(-1px);
-        }
+    .message.user .msg-av {
+      background: #e8dcc8;
+      color: #6b6b6b;
+    }
 
-        /* Message bubbles */
-        .message {
-            display: flex;
-            gap: 8px;
-            animation: fadeUp 0.3s ease;
-        }
+    .msg-bubble {
+      max-width: 80%;
+      padding: 9px 13px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
 
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
+    .message.bot .msg-bubble {
+      background: white;
+      color: #1a1a1a;
+      border-radius: 3px 12px 12px 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    .message.user .msg-bubble {
+      background: linear-gradient(135deg, #2d4a2d, #1a2e1a);
+      color: #f5f0e8;
+      border-radius: 12px 3px 12px 12px;
+    }
 
-        .message.user {
-            flex-direction: row-reverse;
-        }
+    .typing {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
 
-        .msg-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-top: 2px;
-        }
+    .typing-dots {
+      background: white;
+      border-radius: 3px 12px 12px 12px;
+      padding: 10px 14px;
+      display: flex;
+      gap: 4px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
 
-        .message.bot .msg-avatar {
-            background: linear-gradient(135deg, var(--gold), #e8c05a);
-            color: var(--forest);
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 0.85rem;
-        }
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #7a9e6e;
+      animation: bounce 1.2s infinite;
+    }
 
-        .message.user .msg-avatar {
-            background: var(--sand);
-            color: var(--muted);
-        }
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
 
-        .msg-bubble {
-            max-width: 78%;
-            padding: 10px 14px;
-            border-radius: 14px;
-            font-size: 0.82rem;
-            line-height: 1.55;
-        }
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
 
-        .message.bot .msg-bubble {
-            background: var(--white);
-            color: var(--text);
-            border-radius: 4px 14px 14px 14px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
+    @keyframes bounce {
 
-        .message.user .msg-bubble {
-            background: linear-gradient(135deg, var(--moss), var(--forest));
-            color: var(--cream);
-            border-radius: 14px 4px 14px 14px;
-        }
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+      }
 
-        /* Typing indicator */
-        .typing-indicator {
-            display: flex;
-            gap: 8px;
-            align-items: flex-end;
-        }
+      30% {
+        transform: translateY(-5px);
+      }
+    }
 
-        .typing-dots {
-            background: var(--white);
-            border-radius: 4px 14px 14px 14px;
-            padding: 12px 16px;
-            display: flex;
-            gap: 4px;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        }
+    /* ── Input ── */
+    .chat-input-area {
+      padding: 12px 14px;
+      background: white;
+      border-top: 1px solid rgba(0, 0, 0, 0.07);
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
 
-        .typing-dots span {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--sage);
-            animation: bounce 1.2s infinite;
-        }
+    #chat-input {
+      flex: 1;
+      border: 1.5px solid #e8dcc8;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 0.8rem;
+      font-family: 'DM Sans', sans-serif;
+      color: #1a1a1a;
+      background: #f5f0e8;
+      resize: none;
+      outline: none;
+      max-height: 80px;
+      line-height: 1.5;
+      transition: border-color 0.2s;
+    }
 
-        .typing-dots span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
+    #chat-input:focus {
+      border-color: #7a9e6e;
+    }
 
-        .typing-dots span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+    #chat-input::placeholder {
+      color: #6b6b6b;
+    }
 
-        @keyframes bounce {
+    #send-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #2d4a2d, #1a2e1a);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.2s, opacity 0.2s;
+    }
 
-            0%,
-            60%,
-            100% {
-                transform: translateY(0);
-            }
+    #send-btn:hover {
+      transform: scale(1.06);
+    }
 
-            30% {
-                transform: translateY(-5px);
-            }
-        }
+    #send-btn:active {
+      transform: scale(0.94);
+    }
 
-        /* ── Input Area ── */
-        .chat-input-area {
-            padding: 14px 16px;
-            background: var(--white);
-            border-top: 1px solid rgba(0, 0, 0, 0.07);
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-        }
+    #send-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
 
-        #chat-input {
-            flex: 1;
-            border: 1.5px solid var(--sand);
-            border-radius: 12px;
-            padding: 10px 14px;
-            font-size: 0.82rem;
-            font-family: 'DM Sans', sans-serif;
-            color: var(--text);
-            background: var(--cream);
-            resize: none;
-            outline: none;
-            max-height: 90px;
-            line-height: 1.5;
-            transition: border-color 0.2s ease;
-        }
+    .chat-footer {
+      padding: 6px;
+      background: white;
+      text-align: center;
+      font-size: 0.62rem;
+      color: #6b6b6b;
+      border-top: 1px solid rgba(0, 0, 0, 0.04);
+      flex-shrink: 0;
+    }
 
-        #chat-input:focus {
-            border-color: var(--sage);
-        }
+    @media (max-width: 480px) {
+      #chat-window {
+        width: calc(100vw - 20px);
+        right: 10px;
+      }
 
-        #chat-input::placeholder {
-            color: var(--muted);
-        }
-
-        #send-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--moss), var(--forest));
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: transform 0.2s ease, opacity 0.2s ease;
-        }
-
-        #send-btn:hover {
-            transform: scale(1.08);
-        }
-
-        #send-btn:active {
-            transform: scale(0.95);
-        }
-
-        #send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* ── Footer ── */
-        .chat-footer {
-            padding: 8px 16px;
-            background: var(--white);
-            text-align: center;
-            font-size: 0.65rem;
-            color: var(--muted);
-            letter-spacing: 0.04em;
-            border-top: 1px solid rgba(0, 0, 0, 0.04);
-        }
-
-        /* Notification badge */
-        .notif-badge {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            width: 18px;
-            height: 18px;
-            background: #e74c3c;
-            border-radius: 50%;
-            font-size: 0.65rem;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            border: 2px solid var(--forest);
-            animation: fadeUp 0.3s ease;
-        }
-
-        @media (max-width: 480px) {
-            #chat-window {
-                width: calc(100vw - 24px);
-                right: 12px;
-                bottom: 90px;
-            }
-
-            #chat-bubble {
-                bottom: 20px;
-                right: 20px;
-            }
-        }
-    </style>
+      #chat-bubble {
+        bottom: 16px;
+        right: 16px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-    <div class="demo-text">Countryside Resort Gilgit — Chat Widget Demo</div>
+  <div class="demo-text">Countryside Resort Gilgit</div>
 
-    <!-- Chat Bubble -->
-    <div id="chat-bubble" onclick="toggleChat()">
-        <div class="notif-badge" id="notif-badge">1</div>
-        <!-- Chat icon -->
-        <svg class="icon-chat" width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" fill="none" stroke="#f5f0e8"
-                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-            <circle cx="9" cy="10" r="1" fill="#c9a84c" />
-            <circle cx="12" cy="10" r="1" fill="#c9a84c" />
-            <circle cx="15" cy="10" r="1" fill="#c9a84c" />
-        </svg>
-        <!-- Close icon -->
-        <svg class="icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" style="display:none">
-            <path d="M18 6L6 18M6 6l12 12" stroke="#f5f0e8" stroke-width="2" stroke-linecap="round" />
-        </svg>
-    </div>
+  <!-- Bubble -->
+  <div id="chat-bubble">
+    <div class="notif" id="notif">1</div>
+    <svg class="icon-chat" width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="#f5f0e8" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="9" cy="10" r="1" fill="#c9a84c" />
+      <circle cx="12" cy="10" r="1" fill="#c9a84c" />
+      <circle cx="15" cy="10" r="1" fill="#c9a84c" />
+    </svg>
+    <svg class="icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M18 6L6 18M6 6l12 12" stroke="#f5f0e8" stroke-width="2" stroke-linecap="round" />
+    </svg>
+  </div>
 
-    <!-- Chat Window -->
-    <div id="chat-window">
-
-        <!-- Header -->
-        <div class="chat-header">
-            <div class="avatar">A</div>
-            <div class="header-info">
-                <div class="header-name">Ali — Resort Assistant</div>
-                <div class="header-sub">Countryside Resort Gilgit</div>
-            </div>
-            <div class="status-dot"></div>
-        </div>
-
-        <!-- Messages -->
-        <div class="chat-messages" id="chat-messages">
-
-            <!-- Welcome card -->
-            <div class="welcome-card">
-                <div class="resort-name">Countryside Resort Gilgit</div>
-                <p>Welcome! I'm Ali, your personal resort assistant. Ask me anything about our rooms, activities, local
-                    attractions, or how to book your stay.</p>
-            </div>
-
-            <!-- Quick suggestions -->
-            <div class="suggestions">
-                <div class="suggestion-chip" onclick="sendSuggestion('What rooms are available?')">Room types</div>
-                <div class="suggestion-chip" onclick="sendSuggestion('What are the prices?')">Prices</div>
-                <div class="suggestion-chip" onclick="sendSuggestion('What attractions are near Gilgit?')">Attractions
-                </div>
-                <div class="suggestion-chip" onclick="sendSuggestion('How can I book a room?')">Book now</div>
-                <div class="suggestion-chip" onclick="sendSuggestion('What activities do you offer?')">Activities</div>
-            </div>
-
-        </div>
-
-        <!-- Input -->
-        <div class="chat-input-area">
-            <textarea id="chat-input" placeholder="Ask me anything..." rows="1" onkeydown="handleKey(event)"
-                oninput="autoResize(this)"></textarea>
-            <button id="send-btn" onclick="sendMessage()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#f5f0e8" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </button>
-        </div>
-
-        <div class="chat-footer">Powered by AI · Countryside Resort Gilgit</div>
-    </div>
-
-    <script>
-        const API_URL = "http://localhost:8000/chat";
-        const THREAD_ID = "guest-" + Math.random().toString(36).substr(2, 9);
-        let isOpen = false;
-        let isLoading = false;
-
-        function toggleChat() {
-            isOpen = !isOpen;
-            const bubble = document.getElementById("chat-bubble");
-            const window_ = document.getElementById("chat-window");
-            const badge = document.getElementById("notif-badge");
-
-            bubble.classList.toggle("open", isOpen);
-            window_.classList.toggle("open", isOpen);
-
-            if (badge) badge.remove();
-
-            if (isOpen) {
-                setTimeout(() => document.getElementById("chat-input").focus(), 400);
-            }
-        }
-
-        function autoResize(el) {
-            el.style.height = "auto";
-            el.style.height = Math.min(el.scrollHeight, 90) + "px";
-        }
-
-        function handleKey(e) {
-            if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        }
-
-        function addMessage(text, role) {
-            const container = document.getElementById("chat-messages");
-            const div = document.createElement("div");
-            div.className = `message ${role}`;
-
-            const avatarLetter = role === "bot" ? "A" : "G";
-            div.innerHTML = `
-      <div class="msg-avatar">${avatarLetter}</div>
-      <div class="msg-bubble">${text}</div>
-    `;
-
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function showTyping() {
-            const container = document.getElementById("chat-messages");
-            const div = document.createElement("div");
-            div.className = "message bot typing-indicator";
-            div.id = "typing";
-            div.innerHTML = `
-      <div class="msg-avatar">A</div>
-      <div class="typing-dots">
-        <span></span><span></span><span></span>
+  <!-- Window -->
+  <div id="chat-window">
+    <div class="chat-header">
+      <div class="avatar">A</div>
+      <div>
+        <div class="header-name">Ali — Resort Assistant</div>
+        <div class="header-sub">Countryside Resort Gilgit</div>
       </div>
-    `;
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-        }
+      <div class="status"></div>
+    </div>
 
-        function removeTyping() {
-            const t = document.getElementById("typing");
-            if (t) t.remove();
-        }
+    <div class="chat-messages" id="messages">
+      <div class="welcome-card">
+        <div class="resort-name">Countryside Resort Gilgit</div>
+        <p>Welcome! I'm Ali. Ask me about rooms, prices, activities, or local attractions in Gilgit-Baltistan.</p>
+      </div>
+      <div class="suggestions">
+        <div class="chip" onclick="suggest('What room types do you have?')">Room types</div>
+        <div class="chip" onclick="suggest('What are your prices?')">Prices</div>
+        <div class="chip" onclick="suggest('What attractions are near Gilgit?')">Attractions</div>
+        <div class="chip" onclick="suggest('How can I book a room?')">Book now</div>
+        <div class="chip" onclick="suggest('What activities do you offer?')">Activities</div>
+      </div>
+    </div>
 
-        async function sendMessage() {
-            const input = document.getElementById("chat-input");
-            const question = input.value.trim();
-            if (!question || isLoading) return;
+    <div class="chat-input-area">
+      <textarea id="chat-input" placeholder="Ask me anything..." rows="1" onkeydown="handleKey(event)"
+        oninput="autoResize(this)"></textarea>
+      <button id="send-btn" onclick="sendMessage()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#f5f0e8" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+    <div class="chat-footer">Powered by AI · Countryside Resort Gilgit</div>
+  </div>
 
-            input.value = "";
-            input.style.height = "auto";
-            isLoading = true;
-            document.getElementById("send-btn").disabled = true;
+  <script>
+    const API_URL = "http://localhost:8000/chat";
+    const THREAD_ID = "guest-" + Math.random().toString(36).substr(2, 9);
+    let isLoading = false;
+    let isOpen = false;
 
-            addMessage(question, "user");
-            showTyping();
+    // Toggle
+    document.getElementById("chat-bubble").addEventListener("click", function () {
+      isOpen = !isOpen;
+      this.classList.toggle("open", isOpen);
+      document.getElementById("chat-window").classList.toggle("open", isOpen);
+      const n = document.getElementById("notif");
+      if (n) n.remove();
+      if (isOpen) setTimeout(() => document.getElementById("chat-input").focus(), 100);
+    });
 
-            try {
-                const res = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ question, thread_id: THREAD_ID })
-                });
+    function autoResize(el) {
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, 80) + "px";
+    }
 
-                const data = await res.json();
-                removeTyping();
-                addMessage(data.answer, "bot");
+    function handleKey(e) {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    }
 
-            } catch (err) {
-                removeTyping();
-                addMessage("Sorry, I'm having trouble connecting. Please try again in a moment.", "bot");
-            }
+    function addMessage(text, role) {
+      const box = document.getElementById("messages");
+      const div = document.createElement("div");
+      div.className = "message " + role;
+      const av = role === "bot" ? "A" : "G";
+      // render line breaks properly
+      const formatted = text.replace(/\n/g, "<br>");
+      div.innerHTML = `<div class="msg-av">${av}</div><div class="msg-bubble">${formatted}</div>`;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
 
-            isLoading = false;
-            document.getElementById("send-btn").disabled = false;
-            document.getElementById("chat-input").focus();
-        }
+    function showTyping() {
+      const box = document.getElementById("messages");
+      const div = document.createElement("div");
+      div.className = "message bot typing";
+      div.id = "typing";
+      div.innerHTML = `<div class="msg-av">A</div><div class="typing-dots"><span></span><span></span><span></span></div>`;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
 
-        function sendSuggestion(text) {
-            document.getElementById("chat-input").value = text;
-            sendMessage();
-        }
-    </script>
+    function removeTyping() {
+      const t = document.getElementById("typing");
+      if (t) t.remove();
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("chat-input");
+      const q = input.value.trim();
+      if (!q || isLoading) return;
+      input.value = "";
+      input.style.height = "auto";
+      isLoading = true;
+      document.getElementById("send-btn").disabled = true;
+      addMessage(q, "user");
+      showTyping();
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: q, thread_id: THREAD_ID })
+        });
+        const data = await res.json();
+        removeTyping();
+        addMessage(data.answer, "bot");
+      } catch (e) {
+        removeTyping();
+        addMessage("Sorry, I can't connect right now. Please try again shortly.", "bot");
+      }
+      isLoading = false;
+      document.getElementById("send-btn").disabled = false;
+      document.getElementById("chat-input").focus();
+    }
+
+    function suggest(text) {
+      document.getElementById("chat-input").value = text;
+      sendMessage();
+    }
+  </script>
 </body>
 
 </html>
